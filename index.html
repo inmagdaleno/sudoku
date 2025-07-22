@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sudoku Geométrico - Isla Misteriosa</title>
+  <link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+  <h1>El tablero de los Ancestros</h1>
+  <p>Arrastra los símbolos de los ancestros a su posición sagrada.<br>¡No repitas símbolos ni en filas, ni en columnas ni en cada uno de los cuadrantes marcados en rojo!</p>
+
+  <div class="main-container">
+    <div id="outerContainer">
+      <div id="tableroContainer">
+        <table id="sudoku"></table>
+      </div>
+    </div>
+
+    <div id="dragZoneContainer">
+      <h2>Arrastra los símbolos</h2>
+      <div id="dragZone" class="drag-zone"></div>
+      <div id="smallButtonsContainer">
+        <button onclick="deshacer()">Deshacer</button>
+        <button onclick="limpiar()">Limpiar Tablero</button>
+        <button onclick="verificar()">Verificar</button>
+      </div>
+      <div id="solveButtonContainer">
+        <button onclick="iniciarResolucion()">Resolver</button>
+      </div>
+    </div>
+  </div>
+  <div id="resultado"></div>
+
+  <!-- Sonidos -->
+  <audio id="clickSound" src="audio/click.wav"></audio>
+  <audio id="errorSound" src="audio/error.mp3"></audio>
+  <audio id="successSound" src="audio/success.wav"></audio>
+
+  <script src="funciones.js"></script>
+</body>
+</html>

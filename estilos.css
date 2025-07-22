@@ -1,0 +1,177 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url('img/fondoTropical.webp');
+  background-size: cover;
+  background-position:bottom;
+  font-family: sans-serif;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
+}
+
+h1 {
+  margin-top: 30px; 
+  margin-bottom: 5px;
+}
+
+p {
+  margin-top: 10px; 
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+#outerContainer {
+  margin-top: 30px;
+  width: 540px;
+  height: 540px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('img/tableroFinal.webp');
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  filter: drop-shadow(-20px 20px 20px rgba(0, 0, 0, 0.8));
+  border: 2px solid #4d241a;
+}
+
+#tableroContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra verticalmente la tabla dentro de tableroContainer */
+  width: 405px; /* Asegura que tableroContainer no sea más grande que la tabla */
+  height: 405px; /* Asegura que tableroContainer no sea más grande que la tabla */
+  background-image: url('img/tableroBase.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 15px #000;
+  width: 405px;
+  height: 405px;
+}
+
+td {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+}
+
+#sudoku {
+    background-image: url('img/tableroBase.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.gold {
+  border: 4px solid gold;
+  box-sizing: border-box;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 5px gold; }
+  100% { box-shadow: 0 0 20px gold; }
+}
+
+.svg-symbol {
+  width: 50px;
+  height: 50px;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra verticalmente los elementos */
+  gap: 50px;
+}
+
+#dragZoneContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0; /* Revertir el margen superior */
+  margin-left: 40px;
+  justify-content: space-between; /* Distribuye el espacio verticalmente */
+  height: 540px; /* Misma altura que outerContainer para alinear */
+}
+
+#dragZoneContainer h2 {
+  margin-top: 40px; 
+  margin-bottom: 0px;
+}
+
+.drag-zone {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual ancho */
+  gap: 20px 40px; /* row-gap: 5px, column-gap: 20px */
+  height: 220px; /* Altura para 3 filas de 60px + gaps */
+  width: 120px; /* Ancho para 2 columnas de 50px + gaps */
+  justify-items: center;
+  align-items: center;
+}
+
+.draggable {
+  width: 50px;
+  height: 50px;
+  cursor: grab;
+  user-select: none;
+}
+
+#resultado {
+  margin-top: 5px; /* Reducido para ahorrar espacio */
+  font-size: 18px;
+  background: rgba(0,0,0,0.5);
+  padding: 10px;
+  border-radius: 8px;
+  display: none;
+}
+
+#smallButtonsContainer {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#smallButtonsContainer button {
+  padding: 8px 15px;
+  font-size: 14px;
+}
+
+#solveButtonContainer {
+  margin-top: 0;
+}
+
+#solveButtonContainer button {
+  padding: 12px 25px;
+  font-size: 18px;
+}
+
+.success {
+  animation: blink-green 1s 3;
+}
+
+@keyframes blink-green {
+  0%, 100% { background: transparent; }
+  50% { background: rgba(0, 255, 0, 0.4); }
+}
+
+.error {
+  animation: blink-red 0.5s 3;
+}
+
+@keyframes blink-red {
+  0%, 100% { background: transparent; }
+  50% { background: rgba(255, 0, 0, 0.5); }
+}
