@@ -140,7 +140,7 @@ function dragHandler(e) {
   } else {
     e.dataTransfer.setData("source", "dragZone");
   }
-  playSound("clickSound");
+  playSound("audioClick");
 }
 
 function dropHandler(e) {
@@ -288,11 +288,11 @@ function verificar() {
     document.getElementById("resultado").innerHTML =
       "¡Puzzle resuelto! Código secreto: " + obtenerCodigo();
     table.classList.add("success");
-    playSound("successSound");
+    playSound("audioSuccess");
   } else {
     document.getElementById("resultado").textContent =
       "Hay errores. Revisa filas, columnas y cuadrantes.";
-    playSound("errorSound");
+    playSound("audioError");
   }
 }
 

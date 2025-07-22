@@ -35,7 +35,6 @@ p {
   background-position: center;
   border-radius: 16px;
   filter: drop-shadow(-20px 20px 20px rgba(0, 0, 0, 0.8));
-  border: 2px solid #4d241a;
 }
 
 #tableroContainer {
@@ -116,17 +115,22 @@ td {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual ancho */
   gap: 20px 40px; /* row-gap: 5px, column-gap: 20px */
-  height: 220px; /* Altura para 3 filas de 60px + gaps */
-  width: 120px; /* Ancho para 2 columnas de 50px + gaps */
+  height: 280px; /* Altura para 3 filas de 80px + gaps */
+  width: 200px; /* Ancho para 2 columnas de 80px + gaps */
   justify-items: center;
   align-items: center;
 }
 
 .draggable {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   cursor: grab;
   user-select: none;
+}
+
+.draggable .svg-symbol {
+  width: 60px;
+  height: 60px;
 }
 
 #resultado {
@@ -140,22 +144,56 @@ td {
 
 #smallButtonsContainer {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 20px;
 }
 
 #smallButtonsContainer button {
-  padding: 8px 15px;
-  font-size: 14px;
+  padding: 12px 24px;
+  font-size: 16px;
+  background-image: url('img/madera.webp');
+  background-size: 300%;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  color: #300B07; /* Para que el texto sea visible sobre la madera */
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
+  font-weight: bold;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+#smallButtonsContainer button:hover {
+  transform: scale(1.1);
+  filter: brightness(80%) drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
+  color:#300B07;
 }
 
 #solveButtonContainer {
-  margin-top: 0;
+  margin-top: 10;
 }
 
 #solveButtonContainer button {
-  padding: 12px 25px;
+  padding: 15px 30px;
   font-size: 18px;
+  background-image: url('img/madera.webp');
+  background-size: 300%;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  color: #300B07; 
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
+  font-weight: bold;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+#solveButtonContainer button:hover {
+  transform: scale(1.1);
+  filter: brightness(80%) drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
+  color: #300B07;
 }
 
 .success {
