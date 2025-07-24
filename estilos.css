@@ -50,7 +50,8 @@ p {
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.6);
   box-shadow: 0 0 15px #000;
@@ -74,14 +75,23 @@ td {
 }
 
 .gold {
-  border: 4px solid gold;
+  border: 6px solid transparent;
   box-sizing: border-box;
+  animation: glow 2s infinite alternate;
+  border-image: url('img/oro.webp') 30 stretch;
+}
+
+.full-gold {
+  background-color: gold;
+  box-shadow: 0 0 15px gold;
+  border-image: none;
+  border: none;
   animation: glow 2s infinite alternate;
 }
 
 @keyframes glow {
   0% { box-shadow: 0 0 5px gold; }
-  100% { box-shadow: 0 0 20px gold; }
+  100% { box-shadow: 0 0 10px gold; }
 }
 
 .svg-symbol {

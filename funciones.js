@@ -123,6 +123,12 @@ function renderDragZone() {
     let div = document.createElement("div");
     div.classList.add("draggable");
     div.innerHTML = f.svg;
+    if (f.id === 2) {
+      div.style.width = "72px";
+      div.style.height = "72px";
+      div.querySelector('.svg-symbol').style.width = "72px";
+      div.querySelector('.svg-symbol').style.height = "72px";
+    }
     div.draggable = true;
     div.dataset.value = f.id;
     div.ondragstart = dragHandler;
@@ -304,6 +310,14 @@ function obtenerCodigo() {
     code += cell.dataset.value;
   }
   return code;
+}
+
+function iniciarResolucion() {
+  const table = document.getElementById("sudoku");
+  goldenCells.forEach(([r, c]) => {
+    const cell = table.rows[r].cells[c];
+    cell.classList.add("full-gold");
+  });
 }
 
 function playSound(id) {
