@@ -2,7 +2,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)), url('img/fondoTropical.webp');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('img/fondoTropical.webp');
   background-size: cover;
   background-position: bottom -80px;
   font-family: 'Montserrat', sans-serif;
@@ -18,21 +18,20 @@ h1 {
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 10px;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 p {
   font-size: 16px;
   line-height: 20px;
-  font-weight: 550;
-  line-height: 24px;
-  margin-bottom: 10px;
-  margin-top: 20px;
+  font-weight: 650;
+  line-height: 26px;
+  margin-bottom: 20px;
   color: #ffffff;
 }
 
 #outerContainer {
-  margin-top: 40px;
+  margin-top: 50px;
   width: 540px;
   height: 540px;
   display: flex;
@@ -51,10 +50,11 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   margin: 0 auto;
-  
+  margin-top: -9px;
   box-shadow: 0 0 15px #000;
-  width: 405px;
+  width: 395px;
   height: 405px;
+  z-index: 10; /* Asegura que esté por encima */
 }
 
 td {
@@ -65,18 +65,11 @@ td {
   position: relative;
 }
 
-#sudoku {
-    background-image: url('img/tableroBase.webp');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
 .gold {
   border: 6px solid transparent;
   box-sizing: border-box;
   animation: glow 2s infinite alternate;
-  border-image: url('img/oro.webp') 15 round;
+  border-image: url('img/oro.webp') 6 round;
 }
 
 .full-gold {
@@ -111,7 +104,7 @@ td {
   margin-top: 20px; /* Revertir el margen superior */
   margin-left: 40px;
   justify-content: space-between; /* Distribuye el espacio verticalmente */
-  height: 540px; /* Misma altura que outerContainer para alinear */
+  height: 550px; /* Misma altura que outerContainer para alinear */
 }
 
 #dragZoneContainer p {
@@ -218,4 +211,412 @@ td {
 @keyframes blink-red {
   0%, 100% { background: transparent; }
   50% { background: rgba(255, 0, 0, 0.5); }
+}
+
+/* Estilos para los botones de la esquina superior derecha */
+.esquina-superior-derecha {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  z-index: 1001; /* Asegura que esté por encima de otros elementos */
+  display: flex;
+  gap: 20px; /* Espacio entre los botones */
+}
+
+.btn-icono-esquina {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ff00f0, #00ffbf);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-icono-esquina:hover {
+  background-position: 100% 100%;
+  transform: scale(1.1);
+}
+
+/* Estilos para el modal de perfil */
+#form-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  text-align: center; /* Centrar todo el contenido */
+}
+
+.perfil-img-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#perfil-img-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.form-grupo {
+  width: 100%; /* Ocupar todo el ancho disponible */
+  max-width: 400px; /* Limitar el ancho del grupo al mismo que el input */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centrar los hijos */
+  margin: 0 auto; /* Centrar el grupo completo */
+}
+
+.form-grupo label {
+  font-weight: 500;
+  color: #141414;
+  width: 100%; /* Asegura que la etiqueta ocupe el ancho del input */
+  max-width: 400px; /* Limita el ancho de la etiqueta al mismo que el input */
+  text-align: left; /* Alinea el texto de la etiqueta a la izquierda */
+  display: block; /* Asegura que la etiqueta se comporte como un bloque */
+  margin: 0 auto; /* Centra la etiqueta dentro del form-grupo */
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
+
+input[type="text"], input[type="email"] {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(82, 82, 82, 0.37);
+  backdrop-filter: blur(3px); /* Reducido el blur para más transparencia */
+  -webkit-backdrop-filter: blur(7px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 12px 24px; 
+  color: #3b3b3b; 
+  width: 100%; 
+  max-width: 400px;
+  box-sizing: border-box;
+  margin: 0 auto; 
+}
+
+input[type="text"]::placeholder, input[type="email"]::placeholder {
+  color: #f1f1f1; /* Asegura que el placeholder sea visible */
+}
+
+/* Estilos para la tabla de ranking */
+#tabla-ranking {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 16px; /* Redondeado para que coincida con el modal */
+  overflow: hidden; /* Asegura que el contenido respete el border-radius */
+}
+
+#tabla-ranking th, #tabla-ranking td {
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  text-align: left;
+}
+
+#tabla-ranking th {
+  background-color: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+}
+
+#tabla-ranking tbody tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.1); /* Más transparencia para impares */
+}
+
+#tabla-ranking tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05); /* Menos transparencia para pares */
+}
+
+#tabla-ranking tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes animated-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+#score-container {
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  background: linear-gradient(45deg, #ff00f0, #00ffbf);
+  background-size: 200% 200%;
+  animation: animated-gradient 3s ease-in-out infinite;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 20px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(107, 107, 107, 0.5);
+}
+
+#timer-container {
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  transform: translateX(-50%);
+  background: linear-gradient(45deg, #ff00f0, #00ffbf);
+  background-size: 200% 200%;
+  animation: animated-gradient 3s ease-in-out infinite;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 20px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(107, 107, 107, 0.5);
+}
+
+.btn-pista-extra-estilo {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #6a7bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.btn-pista-extra-estilo:hover {
+  background-color: #2949ff;
+  transform: scale(1.1);
+}
+
+.btn-volver-atras-estilo {
+  left: 30px; /* Misma distancia que el botón de pista extra */
+  right: auto; /* Desactivar la posición derecha */
+}
+
+
+
+.btn-pista-primario, .btn-pista-secundario {
+    width: 100%; /* Ambos botones ocupan el ancho completo del contenedor */
+    padding: 12px 24px; /* Reducir padding para menor altura */
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 10px rgba(107, 107, 107, 0.5);
+    font-size: 16px;
+    border: none;
+    white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
+}
+
+.btn-pista-primario {
+    background: linear-gradient(45deg, #ff00f0, #00ffbf);
+    background-size: 200% 200%;
+    color: white;
+}
+
+.btn-pista-primario:hover {
+    background-position: 100% 100%;
+    transform: translateY(-2px);
+    color: #e7fef6;
+}
+
+.btn-pista-secundario {
+    backdrop-filter: blur(6px) saturate(180%);
+    background: rgba(255, 255, 255, 0.1);
+    color: #3b3b3b;
+}
+
+.btn-pista-secundario:hover {
+    background: rgba(255, 255, 255, 0.2); /* Ligeramente más transparente */
+    box-shadow: 0 0 15px rgba(128, 0, 128, 0.6); /* Reflejo morado */
+    transform: translateY(-2px);
+    color: #e7fef6;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* z-index base para todos los modales */
+}
+
+/* z-index superior para modales que se superponen */
+.modal-overlay {
+    z-index: 2000;
+}
+
+.modal-contenido {
+  background: rgba(255, 255, 255, 0.4); 
+  box-shadow: 0 8px 32px 0 rgba(15, 18, 61, 0.37);
+  backdrop-filter: blur(3px); /* Reducido el blur para más transparencia */
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 40px; 
+  color: #1a1a1a;
+  width: 400px; 
+  height: auto; 
+  max-width: 90%; 
+  max-height: 90%; 
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto; 
+}
+
+.modal-contenido img {
+  width: 60%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal .cerrar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 26px;
+  color: white; /* Cambiado a blanco para asegurar visibilidad */
+  cursor: pointer;
+  z-index: 2002; /* Asegura que esté por encima de todo */
+}
+
+#btn-guardar-perfil{
+  margin-top: 10px;
+  padding: 12px 24px; 
+}
+
+#tabla-ranking tbody tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.1); /* Más transparencia para impares */
+}
+
+#tabla-ranking tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05); /* Menos transparencia para pares */
+}
+
+#tabla-ranking tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#tabla-ranking th, #tabla-ranking td {
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  text-align: left;
+}
+
+#tabla-ranking th {
+  background-color: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+}
+
+#tabla-ranking {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 16px; /* Redondeado para que coincida con el modal */
+  overflow: hidden; /* Asegura que el contenido respete el border-radius */
+}
+
+#feedback-puzzle1 {
+  display: none; /* Oculto por defecto */
+  margin-top: 10px;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+#feedback-puzzle1{
+  padding: 20px;
+  width: 350px;
+  font-size: 14PX;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+#feedback-puzzle1.success {
+  background-color: rgba(146, 251, 146, 0.5); /* Verde con 50% de transparencia */
+  margin-bottom: 20px;
+}
+
+#feedback-puzzle1.error {
+  background-color: rgba(255, 142, 142, 0.5); /* Rojo con 50% de transparencia */
+}
+#feedback-puzzle1.warning {
+  background-color: rgba(252, 206, 122, 0.5); /* Naranja semitransparente */
+}
+
+.hinted-cell {
+  background-color: rgba(173, 216, 230, 0.3); /* Azul claro con transparencia */
+}
+
+
+.btn-pista-primario, .btn-pista-secundario {
+    width: 100%; /* Ambos botones ocupan el ancho completo del contenedor */
+    padding: 12px 24px; /* Reducir padding para menor altura */
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 10px rgba(107, 107, 107, 0.5);
+    font-size: 16px;
+    border: none;
+    white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
+}
+
+.btn-pista-primario {
+    background: linear-gradient(45deg, #ff00f0, #00ffbf);
+    background-size: 200% 200%;
+    color: white;
+}
+
+.btn-pista-primario:hover {
+    background-position: 100% 100%;
+    transform: translateY(-2px);
+    color: #e7fef6;
+}
+
+.btn-pista-secundario {
+    backdrop-filter: blur(6px) saturate(180%);
+    background: rgba(255, 255, 255, 0.1);
+    color: #3b3b3b;
+}
+
+.btn-pista-secundario:hover {
+    background: rgba(255, 255, 255, 0.2); /* Ligeramente más transparente */
+    box-shadow: 0 0 15px rgba(128, 0, 128, 0.6); /* Reflejo morado */
+    transform: translateY(-2px);
+    color: #e7fef6;
 }
