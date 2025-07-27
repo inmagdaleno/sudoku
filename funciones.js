@@ -37,10 +37,10 @@ let hintedCells = []; // New array to store hinted cell coordinates
 // Tablero solo con números pre-rellenados:
 const initialPuzzle = [
   [null, 5, null, null, null, null],
-  [null, null, null, null, null, null],
+  [2, null, null, null, null, null],
   [null, null, null, null, 1, null],
   [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
+  [4, null, null, null, null, 6],
   [null, null, null, null, null, 3],
 ];
 
@@ -60,15 +60,28 @@ const goldenCells = [
   [5,5]
 ];
 
+let scoreDisplay;
+let timerDisplay;
+let gameMode;
+let score;
+let timeLeft;
+let timerInterval;
+let isSudokuSolvedOnce = false; // Variable para controlar si el Sudoku ya se resolvió una vez
+let solveButton; // Declarar solveButton globalmente
+
 document.addEventListener("DOMContentLoaded", () => {
+  scoreDisplay = document.getElementById("score");
+  timerDisplay = document.getElementById("timer");
+  solveButton = document.querySelector('#solveButtonContainer button');
+  const groupIrAdelanteDiv = document.getElementById("group-ir-adelante");
+
   renderBoard();
   renderDragZone();
   saveState(); // Guarda el estado inicial
 
   // Elementos de la interfaz
-  const scoreDisplay = document.getElementById("score");
-  const timerDisplay = document.getElementById("timer");
   const btnPistaExtra = document.getElementById("btn-pista-extra");
+  if (groupIrAdelanteDiv) groupIrAdelanteDiv.style.display = "flex"; // Force display for development
 
   // Modales
   const modalPista = document.getElementById("modal-pista");
@@ -79,10 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnDescartarPista = document.getElementById("btn-descartar-pista");
 
   // Estado del juego
-  let gameMode = localStorage.getItem('gameMode') || 'score'; // Recupera el modo de juego
-  let score = 400; // Valor inicial, se podría cargar de localStorage si se guarda
-  let timeLeft = 30 * 60; // 30 minutos en segundos
-  let timerInterval;
+  gameMode = localStorage.getItem('gameMode') || 'score'; // Recupera el modo de juego
+  score = 400; // Valor inicial, se podría cargar de localStorage si se guarda
+  timeLeft = 30 * 60; // 30 minutos en segundos
   let pistasUsadasPuzzle = 0;
   let totalPistasUsadas = 0;
   let puzzleActual = "sudoku"; // Siempre es el puzzle del sudoku aquí
@@ -121,14 +133,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- LÓGICA DE PISTAS ---
   function pedirPista() {
-    if (pistasUsadasPuzzle < 3) { // Permitir hasta 3 pistas
+    if (pistasUsadasPuzzle < 2) { // Permitir hasta 2 pistas
       // Mostrar el modal de confirmación de pista
       if (modalPista) modalPista.style.display = "flex";
       if (feedbackPista) feedbackPista.textContent = ""; // Limpiar feedback anterior
 
       let costoPuntos = 10;
       let costoMinutos = 1;
-      if (pistasUsadasPuzzle === 2) { // Tercera pista
+      if (pistasUsadasPuzzle === 1) { // Segunda pista
         costoPuntos = 20;
         costoMinutos = 2;
       }
@@ -136,9 +148,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (pistaExplicacion) {
         let explanationText = "";
         if (gameMode === 'time') {
-          explanationText = `En esta pista extra se colocarán 3 figuras en el tablero que te ayudarán en su resolución. Pero para ello deberás pagar con ${costoMinutos} minuto${costoMinutos > 1 ? 's' : ''} de tu escaso tiempo. Durante esta prueba dispondrás de un máximo de 3 pistas extra.`;
+          explanationText = `Durante esta prueba tendrás acceso a un máximo de 2 pistas extra y en cada una de ellas te daremos 3 figuras para resolver el panel. ¡Pero no será gratis! Se restará ${costoMinutos} minuto${costoMinutos > 1 ? 's' : ''} de tu valioso tiempo por la ${pistasUsadasPuzzle === 0 ? 'primera' : 'segunda'} pista.`;
         } else if (gameMode === 'score') {
-          explanationText = `En esta pista extra se colocarán 3 figuras en el tablero que te ayudarán en su resolución. Pero para ello se descontarán ${costoPuntos} puntos a tu puntuación. Durante esta prueba dispondrás de un máximo de 3 pistas extra.`;
+          explanationText = `Durante esta prueba tendrás acceso a un máximo de 2 pistas extra en las cuales se incluirán en el tablero 3 figuras por pista usada, para ayudarte en la resolución del tablero. ¡Pero no será gratis! Se te restarán ${costoPuntos} puntos por la ${pistasUsadasPuzzle === 0 ? 'primera' : 'segunda'} pista.`;
         }
         pistaExplicacion.textContent = explanationText;
       }
@@ -168,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Aplicar penalización
     let penaltyScore = 10;
     let penaltyTime = 60;
-    if (pistasUsadasPuzzle === 2) { // Tercera pista
+    if (pistasUsadasPuzzle === 1) { // Segunda pista
       penaltyScore = 20;
       penaltyTime = 120;
     }
@@ -213,11 +225,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Dar hasta 3 pistas
-    for (let i = 0; i < Math.min(3, cellsToHint.length); i++) {
-      const { row, col } = cellsToHint[i];
-      const correctValue = sudokuSolution[row][col];
-      currentBoard[row][col] = correctValue; // Actualizar el estado del tablero
-      hintedCells.push({row, col}); // Almacenar coordenadas de la celda con pista
+    let availableCellsForHint = [];
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < 6; c++) {
+        if (currentBoard[r][c] === null) {
+          const isGolden = goldenCells.some(([gr, gc]) => gr === r && gc === c);
+          if (!isGolden) {
+            const correctValue = sudokuSolution[r][c];
+            if (isValidPlacement(currentBoard, r, c, correctValue)) {
+              availableCellsForHint.push({ row: r, col: c, value: correctValue });
+            }
+          }
+        }
+      }
+    }
+
+    // Shuffle availableCellsForHint to pick random valid cells
+    for (let i = availableCellsForHint.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [availableCellsForHint[i], availableCellsForHint[j]] = [availableCellsForHint[j], availableCellsForHint[i]];
+    }
+
+    for (let i = 0; i < Math.min(3, availableCellsForHint.length); i++) {
+      const { row, col, value } = availableCellsForHint[i];
+      currentBoard[row][col] = value; // Update the board state
+      hintedCells.push({row, col}); // Store coordinates of the hinted cell
       hintsGiven++;
     }
 
@@ -234,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Deshabilitar el botón principal de pista si se alcanzó el máximo de pistas
-    if (pistasUsadasPuzzle >= 3) {
+    if (pistasUsadasPuzzle >= 2) {
       if (btnPistaExtra) btnPistaExtra.disabled = true;
     }
   }
@@ -257,9 +289,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const btnVolverAtras = document.getElementById("btn-volver-atras");
+  const btnIrAdelanteButton = document.getElementById("btn-ir-adelante");
+
   if (btnVolverAtras) {
     btnVolverAtras.addEventListener("click", () => {
       history.back(); // Vuelve a la pantalla anterior en el historial del navegador
+    });
+  }
+
+  if (btnIrAdelanteButton) {
+    btnIrAdelanteButton.addEventListener("click", () => {
+      const modalSudokuResuelto = document.getElementById('modal-sudoku-resuelto');
+      if (modalSudokuResuelto) {
+        openOverlayModal(modalSudokuResuelto);
+      }
     });
   }
 
@@ -472,6 +515,43 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   inicializarJuegoSudoku();
+
+  // Lógica del botón Resolver/Continuar
+  if (solveButton) {
+    solveButton.addEventListener('click', handleSolveButton);
+  }
+
+  // Lógica del botón Continuar del modal del pergamino
+  // Lógica del botón Continuar del modal del pergamino
+  const btnAvanzarSudoku = document.getElementById('btn-avanzar-sudoku');
+  if (btnAvanzarSudoku) {
+    btnAvanzarSudoku.addEventListener('click', () => {
+      // Redirigir a la escena de la jungla
+      window.location.href = "../index.html#escena-jungla"; // Asumiendo que la jungla está en index.html
+    });
+  }
+
+  // --- MODAL SUDOKU RESUELTO ---
+  const modalSudokuResuelto = document.getElementById('modal-sudoku-resuelto');
+  const cerrarModalSudokuResuelto = document.getElementById('cerrar-modal-sudoku-resuelto');
+  const btnContinuarSudoku = document.getElementById('btn-continuar-sudoku');
+
+  if (cerrarModalSudokuResuelto) {
+    cerrarModalSudokuResuelto.addEventListener('click', () => closeOverlayModal(modalSudokuResuelto));
+  }
+
+  if (btnContinuarSudoku) {
+    btnContinuarSudoku.addEventListener('click', () => {
+      window.location.href = "../index.html#escena-jungla";
+    });
+  }
+
+  window.addEventListener('click', (e) => {
+      if (e.target === modalPerfil) closeOverlayModal(modalPerfil);
+      if (e.target === modalRanking) closeOverlayModal(modalRanking);
+      if (e.target === modalPista) closeOverlayModal(modalPista);
+      if (e.target === modalSudokuResuelto) closeOverlayModal(modalSudokuResuelto);
+  });
 });
 
 function renderBoard(boardState = initialPuzzle) {
@@ -487,9 +567,9 @@ function renderBoard(boardState = initialPuzzle) {
       cell.ondragover = (e) => e.preventDefault();
       cell.ondrop = dropHandler;
 
-      if (goldenCells.some(([r,c]) => r === i && c === j)) {
-        cell.classList.add("gold");
-      }
+      // Eliminado: if (goldenCells.some(([r,c]) => r === i && c === j)) {
+      // Eliminado:   cell.classList.add("gold");
+      // Eliminado: }
 
       // Añadir clase para celdas con pistas
       if (hintedCells.some(hc => hc.row === i && hc.col === j)) {
@@ -624,7 +704,86 @@ function limpiar() {
 
 function isFigure(val) {
   return figuras.some(f => f.id === val);
+}
+
+function isValidPlacement(board, row, col, value) {
+  // Check row
+  for (let c = 0; c < 6; c++) {
+    if (board[row][c] == value) {
+      return false;
     }
+  }
+
+  // Check column
+  for (let r = 0; r < 6; r++) {
+    if (board[r][col] == value) {
+      return false;
+    }
+  }
+
+  // Check 2x3 subgrid
+  const startRow = Math.floor(row / 2) * 2;
+  const startCol = Math.floor(col / 3) * 3;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 3; c++) {
+      if (board[startRow + r][startCol + c] == value) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function isSudokuSolved() {
+  const table = document.getElementById("sudoku");
+  let solved = true;
+
+  // Check rows, columns, and 2x3 subgrids
+  for (let i = 0; i < 6; i++) {
+    let rowValues = new Set();
+    let colValues = new Set();
+    for (let j = 0; j < 6; j++) {
+      let cellValueRow = table.rows[i].cells[j].dataset.value;
+      let cellValueCol = table.rows[j].cells[i].dataset.value;
+
+      if (!cellValueRow || rowValues.has(cellValueRow)) {
+        solved = false;
+        break;
+      }
+      rowValues.add(cellValueRow);
+
+      if (!cellValueCol || colValues.has(cellValueCol)) {
+        solved = false;
+        break;
+      }
+      colValues.add(cellValueCol);
+    }
+    if (!solved) break;
+  }
+
+  if (solved) {
+    for (let blockRow = 0; blockRow < 6; blockRow += 2) {
+      for (let blockCol = 0; blockCol < 6; blockCol += 3) {
+        let blockValues = new Set();
+        for (let i = 0; i < 2; i++) {
+          for (let j = 0; j < 3; j++) {
+            let cellValue = table.rows[blockRow + i].cells[blockCol + j].dataset.value;
+            if (!cellValue || blockValues.has(cellValue)) {
+              solved = false;
+              break;
+            }
+            blockValues.add(cellValue);
+          }
+          if (!solved) break;
+        }
+        if (!solved) break;
+      }
+      if (!solved) break;
+    }
+  }
+  return solved;
+}
 
 function verificar() {
   const table = document.getElementById("sudoku");
@@ -700,35 +859,7 @@ function verificar() {
       }
     }
   }
-
-  if (correct) {
-    document.getElementById("resultado").innerHTML =
-      "¡Puzzle resuelto! Código secreto: " + obtenerCodigo();
-    table.classList.add("success");
-    playSound("audioSuccess");
-    sendGameResult(); // Enviar resultado al resolver el Sudoku
-    // Redirigir al index.html después de un breve retraso
-    setTimeout(() => {
-      window.location.href = "../index.html";
-    }, 2000);
-  } else {
-    document.getElementById("resultado").textContent =
-      "Hay errores. Revisa filas, columnas y cuadrantes.";
-    playSound("audioError");
-    if (gameMode === 'score') {
-      score -= 10;
-      if (scoreDisplay) scoreDisplay.textContent = score;
-    } else if (gameMode === 'time') {
-      timeLeft -= 60; // Penalización de 1 minuto
-      updateTimerDisplay();
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        alert("¡Se acabó el tiempo! Fin del juego.");
-        window.location.href = "../index.html";
-        return;
-      }
-    }
-  }
+  return correct;
 }
 
 function obtenerCodigo() {
@@ -741,11 +872,62 @@ function obtenerCodigo() {
   return code;
 }
 
+function handleSolveButton() {
+  const resultadoDiv = document.getElementById("resultado");
+  const table = document.getElementById("sudoku");
+  const modalPergaminoSudoku = document.getElementById('modal-pergamino-sudoku');
+
+  if (solveButton.textContent === "Resolver") {
+    if (isSudokuSolved()) {
+      document.getElementById("resultado").innerHTML =
+        "¡Puzzle resuelto! Código secreto: " + obtenerCodigo();
+      table.classList.add("success");
+      playSound("audioSuccess");
+      iniciarResolucion(); // Aplica el estado resuelto a las celdas doradas
+      sendGameResult(); // Enviar resultado al resolver el Sudoku
+      solveButton.textContent = "Continuar";
+      isSudokuSolvedOnce = true; // Marcar que el Sudoku ha sido resuelto
+    } else {
+      resultadoDiv.textContent = "Hay errores. Revisa filas, columnas y cuadrantes.";
+      playSound("audioError");
+      if (gameMode === 'score') {
+        score -= 10;
+        if (scoreDisplay) scoreDisplay.textContent = score;
+      } else if (gameMode === 'time') {
+        timeLeft -= 60; // Penalización de 1 minuto
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          alert("¡Se acabó el tiempo! Fin del juego.");
+          window.location.href = "../index.html";
+          return;
+        }
+      }
+    }
+  } else if (solveButton.textContent === "Continuar") {
+    // Ocultar el juego de Sudoku
+    document.querySelector('.main-container').style.display = 'none';
+    document.getElementById('outerContainer').style.display = 'none';
+    document.getElementById('dragZoneContainer').style.display = 'none';
+    document.getElementById('resultado').style.display = 'none';
+    document.getElementById('score-container').style.display = 'none';
+    document.getElementById('timer-container').style.display = 'none';
+    document.querySelector('.esquina-superior-izquierda').style.display = 'none';
+    document.querySelector('.esquina-superior-derecha').style.display = 'none';
+
+    // Mostrar el nuevo modal de Sudoku Resuelto
+    const modalSudokuResuelto = document.getElementById('modal-sudoku-resuelto');
+    if (modalSudokuResuelto) {
+      openOverlayModal(modalSudokuResuelto);
+    }
+  }
+}
+
 function iniciarResolucion() {
   const table = document.getElementById("sudoku");
   goldenCells.forEach(([r, c]) => {
     const cell = table.rows[r].cells[c];
-    cell.classList.add("full-gold");
+    cell.classList.add("solved-gold");
   });
 }
 
@@ -755,265 +937,4 @@ function playSound(id) {
   audio.play();
   }
 
-function renderBoard(boardState = initialPuzzle) {
-  const table = document.getElementById("sudoku");
-  table.innerHTML = "";
 
-  for (let i = 0; i < 6; i++) {
-    let row = document.createElement("tr");
-    for (let j = 0; j < 6; j++) {
-      let cell = document.createElement("td");
-      cell.dataset.row = i;
-      cell.dataset.col = j;
-      cell.ondragover = (e) => e.preventDefault();
-      cell.ondrop = dropHandler;
-
-      if (goldenCells.some(([r,c]) => r === i && c === j)) {
-        cell.classList.add("gold");
-      }
-
-      // Añadir clase para celdas con pistas
-      if (hintedCells.some(hc => hc.row === i && hc.col === j)) {
-        cell.classList.add("hinted-cell");
-      }
-
-      const val = boardState[i][j];
-      if (val !== null) {
-        if (isFigure(+val)) {
-          let svg = figuras.find(f => f.id == val).svg;
-          cell.innerHTML = svg;
-        } else {
-          cell.textContent = val;
-        }
-        cell.dataset.value = val;
-        
-        // Las celdas iniciales del puzzle y las celdas con pistas no deben ser arrastrables
-        const isInitialPuzzleCell = initialPuzzle[i][j] !== null;
-        const isHintedCell = hintedCells.some(hc => hc.row === i && hc.col === j);
-
-        if (!isInitialPuzzleCell && !isHintedCell) {
-          cell.draggable = true;
-          cell.ondragstart = dragHandler;
-          cell.dataset.originalRow = i; 
-          cell.dataset.originalCol = j; 
-        } else {
-          cell.draggable = false; 
-          cell.ondragstart = null; 
-        }
-      }
-      row.appendChild(cell);
-    }
-    table.appendChild(row);
-  }
-}
-
-function renderDragZone() {
-  const zone = document.getElementById("dragZone");
-  zone.innerHTML = "";
-
-  figuras.forEach(f => {
-    let div = document.createElement("div");
-    div.classList.add("draggable");
-    div.innerHTML = f.svg;
-    if (f.id === 2) {
-      div.style.width = "72px";
-      div.style.height = "72px";
-      div.querySelector('.svg-symbol').style.width = "72px";
-      div.querySelector('.svg-symbol').style.height = "72px";
-    }
-    div.draggable = true;
-    div.dataset.value = f.id;
-    div.ondragstart = dragHandler;
-    zone.appendChild(div);
-  });
-  }
-
-function dragHandler(e) {
-  e.dataTransfer.setData("value", e.currentTarget.dataset.value);
-  // Comprobar si el arrastre se originó en una celda del tablero
-  if (e.currentTarget.dataset.originalRow && e.currentTarget.dataset.originalCol) {
-    e.dataTransfer.setData("source", "board");
-    e.dataTransfer.setData("originalRow", e.currentTarget.dataset.originalRow);
-    e.dataTransfer.setData("originalCol", e.currentTarget.dataset.originalCol);
-  } else {
-    e.dataTransfer.setData("source", "dragZone");
-  }
-  playSound("audioClick");
-}
-
-function dropHandler(e) {
-  e.preventDefault();
-  const value = e.dataTransfer.getData("value");
-  const source = e.dataTransfer.getData("source");
-  const originalRow = e.dataTransfer.getData("originalRow");
-  const originalCol = e.dataTransfer.getData("originalCol");
-
-  // Limpiar la celda de destino antes de colocar el nuevo valor
-  e.target.innerHTML = "";
-  e.target.dataset.value = "";
-
-  if (isFigure(+value)) {
-    let svg = figuras.find(f => f.id == value).svg;
-    e.target.innerHTML = svg;
-  }
-  e.target.dataset.value = value;
-
-  // Si el origen fue del tablero, limpiar la celda original
-  if (source === "board") {
-    const originalCell = document.querySelector(`[data-row="${originalRow}"][data-col="${originalCol}"]`);
-    if (originalCell) {
-      originalCell.innerHTML = "";
-      originalCell.dataset.value = "";
-    }
-  }
-  saveState(); // Guarda el estado después de cada movimiento
-  loadState(history[history.length - 1]); // Recarga el tablero desde el último estado
-}
-
-
-
-function saveState() {
-  const table = document.getElementById("sudoku");
-  let currentState = [];
-  for (let i = 0; i < 6; i++) {
-    let row = [];
-    for (let j = 0; j < 6; j++) {
-      row.push(table.rows[i].cells[j].dataset.value || null);
-    }
-    currentState.push(row);
-  }
-  history.push(currentState);
-}
-
-function loadState(state) {
-  renderBoard(state);
-}
-
-function deshacer() {
-  if (history.length > 1) {
-    history.pop(); // Elimina el estado actual
-    loadState(history[history.length - 1]); // Carga el estado anterior
-  }
-}
-
-function limpiar() {
-  history = []; // Limpia el historial
-  renderBoard(initialPuzzle); // Renderiza el tablero inicial vacío
-  saveState(); // Guarda el estado inicial limpio
-}
-
-
-function isFigure(val) {
-  return figuras.some(f => f.id === val);
-    }
-
-function verificar() {
-  const table = document.getElementById("sudoku");
-  let correct = true;
-
-  // Limpiar errores previos
-  for (let i = 0; i < 6; i++) {
-    for (let j = 0; j < 6; j++) {
-      table.rows[i].cells[j].classList.remove("error");
-    }
-  }
-
-  // Revisión filas
-  for (let i = 0; i < 6; i++) {
-    let fila = [];
-    for (let j = 0; j < 6; j++) {
-      let cell = table.rows[i].cells[j];
-      let v = cell.dataset.value;
-      if (!v) {
-        correct = false;
-        cell.classList.add("error");
-        continue;
-      }
-      if (fila.includes(v)) {
-        correct = false;
-        cell.classList.add("error");
-      } else {
-        fila.push(v);
-      }
-    }
-  }
-
-  // Revisión columnas
-  for (let j = 0; j < 6; j++) {
-    let col = [];
-    for (let i = 0; i < 6; i++) {
-      let cell = table.rows[i].cells[j];
-      let v = cell.dataset.value;
-      if (!v) {
-        correct = false;
-        cell.classList.add("error");
-        continue;
-      }
-      if (col.includes(v)) {
-        correct = false;
-        cell.classList.add("error");
-      } else {
-        col.push(v);
-      }
-    }
-  }
-
-  // Revisión subcuadrículas 2x3
-  for (let blockRow = 0; blockRow < 6; blockRow += 2) {
-    for (let blockCol = 0; blockCol < 6; blockCol += 3) {
-      let block = [];
-      for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 3; j++) {
-          let cell = table.rows[blockRow + i].cells[blockCol + j];
-          let v = cell.dataset.value;
-          if (!v) {
-            correct = false;
-            cell.classList.add("error");
-            continue;
-          }
-          if (block.includes(v)) {
-            correct = false;
-            cell.classList.add("error");
-          } else {
-            block.push(v);
-          }
-        }
-      }
-    }
-  }
-
-  if (correct) {
-    document.getElementById("resultado").innerHTML =
-      "¡Puzzle resuelto! Código secreto: " + obtenerCodigo();
-    table.classList.add("success");
-    playSound("audioSuccess");
-  } else {
-    document.getElementById("resultado").textContent =
-      "Hay errores. Revisa filas, columnas y cuadrantes.";
-    playSound("audioError");
-  }
-}
-
-function obtenerCodigo() {
-  const table = document.getElementById("sudoku");
-  let code = "";
-  for (let [r,c] of goldenCells) {
-    let cell = table.rows[r].cells[c];
-    code += cell.dataset.value;
-  }
-  return code;
-}
-
-function iniciarResolucion() {
-  const table = document.getElementById("sudoku");
-  goldenCells.forEach(([r, c]) => {
-    const cell = table.rows[r].cells[c];
-    cell.classList.add("full-gold");
-  });
-}
-
-function playSound(id) {
-  let audio = document.getElementById(id);
-  audio.currentTime = 0;
-  audio.play();
-  }
