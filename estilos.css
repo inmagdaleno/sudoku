@@ -2,10 +2,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('img/fondoTropical.webp');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)), url('img/fondoTropical.webp');
   background-size: cover;
-  background-position:bottom;
-  font-family: sans-serif;
+  background-position: bottom -80px;
+  font-family: 'Montserrat', sans-serif;
   color: #fff;
   text-align: center;
   margin: 0;
@@ -13,21 +13,30 @@ body {
 }
 
 h1 {
-  margin-top: 30px; 
-  margin-bottom: 5px;
+  font-family: "Barriecito";
+  font-size: 40px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  margin-top: 40px;
 }
 
 p {
-  margin-top: 10px; 
-  margin-bottom: 20px;
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 550;
+  line-height: 24px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  color: #ffffff;
 }
 
 #outerContainer {
-  margin-top: 30px;
+  margin-top: 40px;
   width: 540px;
   height: 540px;
   display: flex;
+  margin-left: 10px;
   justify-content: center;
   align-items: center;
   background-image: url('img/tableroFinal.webp');
@@ -37,23 +46,12 @@ p {
   filter: drop-shadow(-20px 20px 20px rgba(0, 0, 0, 0.8));
 }
 
-#tableroContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center; /* Centra verticalmente la tabla dentro de tableroContainer */
-  width: 405px; /* Asegura que tableroContainer no sea más grande que la tabla */
-  height: 405px; /* Asegura que tableroContainer no sea más grande que la tabla */
-  background-image: url('img/tableroBase.webp');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
 
 table {
   border-collapse: separate;
   border-spacing: 0;
   margin: 0 auto;
-  background: rgba(0, 0, 0, 0.6);
+  
   box-shadow: 0 0 15px #000;
   width: 405px;
   height: 405px;
@@ -78,7 +76,7 @@ td {
   border: 6px solid transparent;
   box-sizing: border-box;
   animation: glow 2s infinite alternate;
-  border-image: url('img/oro.webp') 30 stretch;
+  border-image: url('img/oro.webp') 15 round;
 }
 
 .full-gold {
@@ -110,15 +108,14 @@ td {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 0; /* Revertir el margen superior */
+  margin-top: 20px; /* Revertir el margen superior */
   margin-left: 40px;
   justify-content: space-between; /* Distribuye el espacio verticalmente */
   height: 540px; /* Misma altura que outerContainer para alinear */
 }
 
-#dragZoneContainer h2 {
-  margin-top: 40px; 
-  margin-bottom: 0px;
+#dragZoneContainer p {
+  width: 500px;
 }
 
 .drag-zone {
@@ -155,55 +152,54 @@ td {
 #smallButtonsContainer {
   display: flex;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 #smallButtonsContainer button {
-  padding: 12px 24px;
-  font-size: 16px;
-  background-image: url('img/madera.webp');
-  background-size: 300%;
-  background-repeat: no-repeat;
-  background-position: bottom;
-  color: #300B07; /* Para que el texto sea visible sobre la madera */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  color: white;
+  padding: 11px 22px;
   border-radius: 8px;
-  border: none;
   cursor: pointer;
-  filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
-  font-weight: bold;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  font-weight: 600;
+  transition: all 0.4s ease;
+  font-size: 14px;
+  min-width: 150px;
 }
 
 #smallButtonsContainer button:hover {
-  transform: scale(1.1);
-  filter: brightness(80%) drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
-  color:#300B07;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  color: #e7fef6;
 }
 
 #solveButtonContainer {
-  margin-top: 10;
+  margin-top: 30px;
 }
 
 #solveButtonContainer button {
-  padding: 15px 30px;
-  font-size: 18px;
-  background-image: url('img/madera.webp');
-  background-size: 300%;
-  background-repeat: no-repeat;
-  background-position: bottom;
-  color: #300B07; 
+  background: linear-gradient(45deg, #ff00f0, #00ffbf);
+  background-size: 200% 200%;
+  color: white;
+  border: none;
+  padding: 13px 26px;
   border-radius: 8px;
   cursor: pointer;
-  border: none;
-  filter: drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
-  font-weight: bold;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  font-weight: 600;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 10px rgba(107, 107, 107, 0.5);
+  font-size: 18px;
+  min-width: 150px;
 }
 
 #solveButtonContainer button:hover {
-  transform: scale(1.1);
-  filter: brightness(80%) drop-shadow(6px 6px 12px rgba(0, 0, 0, 0.8));
-  color: #300B07;
+  background-position: 100% 100%;
+  transform: translateY(-2px);
+  color: #e7fef6;
 }
 
 .success {

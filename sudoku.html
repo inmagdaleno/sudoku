@@ -4,11 +4,16 @@
   <meta charset="UTF-8" />
   <title>Sudoku Geométrico - Isla Misteriosa</title>
   <link rel="stylesheet" href="estilos.css" />
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Barrio&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>El tablero de los Ancestros</h1>
-  <p>Arrastra los símbolos de los ancestros a su posición sagrada.<br>¡No repitas símbolos ni en filas, ni en columnas ni en cada uno de los cuadrantes marcados en rojo!</p>
-
+  <h1>El Tablero de los Ancestros</h1>
+  
   <div class="main-container">
     <div id="outerContainer">
       <div id="tableroContainer">
@@ -17,7 +22,7 @@
     </div>
 
     <div id="dragZoneContainer">
-      <h2>Arrastra los símbolos</h2>
+      <p>Arrastra los símbolos de los ancestros a su posición sagrada. ¡No repitas símbolos ni en filas, ni en columnas ni en cada uno de los cuadrantes marcados en rojo!</p>
       <div id="dragZone" class="drag-zone"></div>
       <div id="smallButtonsContainer">
         <button onclick="deshacer()">Deshacer</button>

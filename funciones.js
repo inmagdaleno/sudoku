@@ -35,12 +35,12 @@ let history = [];
 
 // Tablero solo con números pre-rellenados:
 const initialPuzzle = [
+  [null, 5, null, null, null, null],
+  [null, null, null, null, null, null],
+  [null, null, null, null, 1, null],
   [null, null, null, null, null, null],
   [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
-  [null, null, null, null, null, null],
+  [null, null, null, null, null, 3],
 ];
 
 const goldenCells = [
